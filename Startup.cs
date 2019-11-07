@@ -24,7 +24,13 @@ namespace Interp
             }
             catch (Exception) { Console.WriteLine($"Couldn't file load: {src}"); }
 
-            OP[] ops_from_src = Lexer.MakeProg(src);
+            var res = Lexer.MakeProg(src, out var ops_from_src);
+
+            if(!res)
+            {
+                return;
+            }
+
             Cpu cpu = new Cpu(ops_from_src);
             List<string> prints = new List<string>();
             cpu.print_char_func = Console.WriteLine;

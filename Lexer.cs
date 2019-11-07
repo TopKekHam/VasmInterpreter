@@ -83,13 +83,17 @@ namespace Interp
                 prt
             ";
 
-            return MakeProg(src);
+            MakeProg(src, out var ops);
+            return ops;
         }
 
         static List<Label> labels = new List<Label>();
 
-        public static OP[] MakeProg(string src)
+        static Action<string> PrintError = Console.WriteLine;
+
+        public static bool MakeProg(string src, out OP[] ops_arr)
         {
+            ops_arr = null;
             List<OP> ops = new List<OP>();
             List<ResolveName> resolve_name = new List<ResolveName>();
             labels.Clear();
@@ -138,7 +142,8 @@ namespace Interp
 
                             if (char_ptr < start)
                             {
-                                throw new Exception("Bad Memory Location");
+                                PrintError("Bad Memory Location");
+                                return false;
                             }
                             else
                             {
@@ -182,14 +187,15 @@ namespace Interp
 
                                 int start = char_ptr;
 
-                                while (char.IsLetter(src[char_ptr]))
+                                while (char_ptr < src.Length && char.IsLetter(src[char_ptr]) )
                                 {
                                     char_ptr++;
                                 }
 
                                 if (char_ptr == start)
                                 {
-                                    throw new Exception("Bad Op");
+                                    PrintError("Bad Op");
+                                    return false;
                                 }
                                 else
                                 {
@@ -224,7 +230,8 @@ namespace Interp
                 }
                 else
                 {
-                    throw new Exception($"Unknow Op: {resolve_name[i].name}");
+                    PrintError($"Unknow Op: {resolve_name[i].name}");
+                    return false;
                 }
             }
 
@@ -233,10 +240,11 @@ namespace Interp
 
             if (ProjIsValide(res))
             {
-                return res;
+                ops_arr = res;
+                return true;
             }
 
-            return null;
+            return false;
         }
 
         static bool IsLabel(string name, out int memory_location)
@@ -293,7 +301,8 @@ namespace Interp
                 
                 if(def.name == "")
                 {
-                    throw new Exception($"Invalide Op/Arg location (ip:{i}) {OpToString(ops[i])}");
+                    PrintError($"Invalide Op/Arg location (ip:{i}) {OpToString(ops[i])}");
+                    return false;
                 }
 
                 if(def.args != null)
@@ -303,7 +312,8 @@ namespace Interp
                         i++;
                         if (!def.args[arg_idx].HasFlag(ops[i].type))
                         {
-                            throw new Exception($"Invalide Arg type (ip:{i}) {OpToString(ops[i])}");
+                            PrintError($"Invalide Arg type (ip:{i}) {OpToString(ops[i])}");
+                            return false;
                         }
                     }
 
