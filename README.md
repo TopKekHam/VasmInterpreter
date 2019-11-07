@@ -18,18 +18,18 @@ stack size 16 ints.
 
 M = Memory
 R = Register
-# = Number
+N = Number
 
 inc - increase by one R0
 dec - decrease by one R0
-add M/R/# - add to R0
-sub M/R/# - subtract from R0
-mov M/R/# M/R - mov value from M/R/# to M/R 
-jmp M/R/# - jump to place in memory
-je M/R/# - jump if R0 equels
-jne M/R/# - jump if R0 not equels
-jg M/R/# - jump if R0 greater
-jl M/R/# - jump if R0 lesser
+add M/R/N - add to R0
+sub M/R/N - subtract from R0
+mov M/R/N M/R - mov value from M/R/N to M/R 
+jmp M/R/N - jump to place in memory
+je M/R/N - jump if R0 equels
+jne M/R/N - jump if R0 not equels
+jg M/R/N - jump if R0 greater
+jl M/R/N - jump if R0 lesser
 prt - print the number in R0
 psh - push R0 into the stack
 pop - pop number to R0
